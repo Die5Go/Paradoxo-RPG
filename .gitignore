@@ -1,0 +1,21 @@
+# Ambiente Virtual
+venv/
+env/
+ENV/
+
+# Python (arquivos temporários)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Banco de Dados Local (SQLite)
+*.db
+*.sqlite3
+
+# Variáveis de ambiente
+.env
+
+# Ciência de Dados / IDEs
+.ipynb_checkpoints/
+.vscode/
+.idea/
