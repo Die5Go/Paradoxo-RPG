@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paradoxo RPG</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #F4EDDC; color: #3C3B39; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .nav-logo { width: 30px; height: 30px; object-fit: contain; margin-right: 10px; }
+        .container-mobile { max-width: 500px; margin: 0 auto; }
+        .list-group-item { 
+            background-color: #ffffff; 
+            border: 1px solid rgba(0,0,0,0.05); 
+            margin-bottom: 8px; 
+            border-radius: 10px !important;
+            transition: transform 0.2s;
+        }
+        .list-group-item:active { transform: scale(0.98); }
+        .navbar-brand { color: #F4EDDC !important; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark mb-4 shadow-sm">
+        <div class="container d-flex justify-content-center justify-content-md-between">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="{{ url_for('static', filename='paradoxsymbol.png') }}" class="nav-logo" alt="♾️">
+                Paradoxo RPG
+            </a>
+        </div>
+    </nav>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

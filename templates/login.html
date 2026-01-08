@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-mobile px-3">
+    <h5 class="text-center mb-4 text-muted" style="letter-spacing: 1px;">SELECIONE SEU PERFIL</h5>
+    
+    <div class="list-group shadow-sm">
+        {% for user in users %}
+        <a href="{{ url_for('login_player', user_id=user.id) }}" 
+           class="list-group-item list-group-item-action d-flex align-items-center p-3">
+            
+            <div class="flex-grow-1">
+                <span class="fw-bold d-block" style="color: #3C3B39;">{{ user.usuario }}</span>
+                <small class="text-muted">{{ 'Mestre do Jogo' if user.mestre else 'Jogador' }}</small>
+            </div>
+
+            <div class="text-muted">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                </svg>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
