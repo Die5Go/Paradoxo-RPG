@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-mobile px-3">
+    <div class="card-rpg bg-white p-4 shadow-sm text-center">
+        <h5 class="fw-bold mb-4">ACESSO DO MESTRE</h5>
+        
+        <form action="{{ url_for('login_mestre') }}" method="POST">
+            <div class="mb-3">
+                <input type="password" name="senha" 
+                       class="form-control border-0 bg-light p-3 text-center" 
+                       placeholder="Digite a senha" required autofocus>
+            </div>
+            
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-dark btn-lg rounded-pill">Entrar</button>
+                <a href="{{ url_for('index') }}" class="btn btn-link text-muted text-decoration-none small">Voltar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

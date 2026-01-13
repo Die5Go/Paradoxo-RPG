@@ -1,12 +1,11 @@
 {% extends "base.html" %}
-
 {% block content %}
 <div class="container-mobile px-3">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h5 class="text-muted mb-0" style="letter-spacing: 1px;">PERSONAGENS</h5>
-        <a href="{{ url_for('criar') }}" class="btn btn-dark btn-sm rounded-pill px-3">+ Novo</a>
+        <h5 class="text-muted mb-0">MEUS PERSONAGENS</h5>
+        <a href="{{ url_for('criar') }}" class="btn btn-dark btn-sm rounded-pill px-3">NOVO</a>
     </div>
-    
+
     <div class="list-group shadow-sm">
         {% for char in personagens %}
         <a href="{{ url_for('visualizar', id=char.id) }}" 
@@ -19,23 +18,22 @@
             <div class="flex-grow-1">
                 <span class="fw-bold d-block text-dark">{{ char.nome }}</span>
                 <small class="text-muted">
-                    FOR: {{ char.dados.atributos.forca }} | DEX: {{ char.dados.atributos.destreza }}
+                    {{ char.dados.arquetipo }} | 
+                    <span class="text-primary">Dono: {{ char.proprietario.usuario }}</span>
                 </small>
             </div>
 
-            <div class="text-muted">
-                <i class="bi bi-chevron-right"></i> <span>→</span>
-            </div>
+            <div class="text-muted">→</div>
         </a>
         {% else %}
-        <div class="text-center p-5 bg-white rounded-3 shadow-sm">
-            <p class="text-muted mb-0">Nenhum personagem criado ainda.</p>
+        <div class="text-center py-5 bg-white rounded-4 shadow-sm">
+            <p class="text-muted mb-0 small">Nenhum personagem encontrado.</p>
         </div>
         {% endfor %}
     </div>
 
     <div class="mt-4 text-center">
-        <a href="{{ url_for('index') }}" class="btn btn-link text-decoration-none text-muted small">Sair / Trocar Perfil</a>
+        <a href="{{ url_for('index') }}" class="btn btn-link text-muted small">SAIR / TROCAR PERFIL</a>
     </div>
 </div>
 {% endblock %}

@@ -20,6 +20,7 @@ class User(UserMixin, db.Model):
     usuario = db.Column(db.String(50), unique=True)
     senha = db.Column(db.String(100))
     mestre = db.Column(db.Boolean, default=False)
+    fichas = db.relationship('Personagem', backref='proprietario', lazy=True)
 
 class Personagem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -36,6 +37,21 @@ def load_user(user_id):
 def index():
     lista_usuarios = User.query.all()
     return render_template('login.html', users=lista_usuarios)
+
+@app.route('/login-mestre', methods=['GET', 'POST'])
+def login_mestre():
+    if request.method == 'POST':
+        senha_digitada = request.form.get('senha')
+        # Buscamos o usuário mestre no banco
+        mestre = User.query.filter_by(mestre=True).first()
+        
+        if mestre and mestre.senha == senha_digitada:
+            login_user(mestre)
+            return redirect(url_for('dashboard'))
+        else:
+            flash("Senha incorreta!")
+            
+    return render_template('login_mestre.html')
 
 @app.route('/login/<int:user_id>')
 def login_player(user_id):
@@ -59,26 +75,76 @@ def dashboard():
 def criar():
     if request.method == 'POST':
         nome = request.form.get('nome')
+        arquetipo = request.form.get('arquetipo')
+
         file = request.files.get('imagem')
         filename = 'default.png'
-        if file:
-            filename = secure_filename(file, filename)
+        if file and file.filename != '':
+            from werkzeug.utils import secure_filename
+            filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        
+
+        forca = int(request.form.get('a_força', 0))
+        instinto = int(request.form.get('a_instinto', 0))
+        resistencia = int(request.form.get('a_resistência', 0))
+        autoridade = int(request.form.get('a_autoridade', 0))
+        mente = int(request.form.get('a_mente', 0))
+
+        pv_max = 10 + (resistencia * 3)
+        fluxo_max = 3 + mente
+        paradoxo = 0
+
+        pericias = {k.replace('p_', ''): int(v) if v.isdigit() else v 
+                    for k, v in request.form.items() if k.startswith('p_')}
+        pericias['oficio_definicao'] = request.form.get('oficio_nome', '')
+
         dados_ficha = {
+            "arquetipo": arquetipo,
             "atributos": {
-                "forca": request.form.get('forca'),
-                "destreza": request.form.get('destreza')
+                "forca": forca, "instinto": instinto, "resistencia": resistencia, 
+                "autoridade": autoridade, "mente": mente
             },
-            "itens": request.form.get('itens').split(',')
+            "status": {
+                "pv_max": pv_max, "pv_atual": pv_max,
+                "fluxo_max": fluxo_max, "fluxo_atual": fluxo_max,
+                "paradoxo": paradoxo
+            },
+            "pericias": pericias,
+            "habilidades": request.form.get('habilidades', ''),
+            "itens": [i.strip() for i in request.form.get('itens', '').split(',') if i.strip()]
         }
 
-        novo_personagem = Personagem(nome=nome, imagem=filename, user_id=current_user.id, dados=dados_ficha)
+        novo_personagem = Personagem(
+            nome=nome, 
+            imagem=filename, 
+            user_id=current_user.id, 
+            dados=dados_ficha
+        )
         db.session.add(novo_personagem)
         db.session.commit()
+        
         return redirect(url_for('dashboard'))
     
     return render_template('criar.html')
+
+@app.route('/excluir/<int:id>', methods=['POST'])
+@login_required
+def excluir(id):
+    char = Personagem.query.get_or_404(id)
+    if current_user.mestre or char.user_id == current_user.id:
+        db.session.delete(char)
+        db.session.commit()
+    return redirect(url_for('dashboard'))
+
+@app.route('/visualizar/<int:id>')
+@login_required
+def visualizar(id):
+    char = Personagem.query.get_or_404(id)
+
+    if not current_user.mestre and char.user_id != current_user.id:
+        return redirect(url_for('dashboard'))
+        
+    return render_template('visualizar.html', char=char)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5153)

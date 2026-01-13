@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-mobile px-3 pb-5">
+    <div class="d-flex align-items-center mb-4">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-sm btn-outline-dark me-3">←</a>
+        <h5 class="mb-0 text-muted">NOVA FICHA</h5>
+    </div>
+
+    <form action="{{ url_for('criar') }}" method="POST" enctype="multipart/form-data" class="bg-white p-4 rounded-4 shadow-sm">
+        
+        <div class="mb-3">
+            <label class="form-label small fw-bold text-secondary text-uppercase">Nome do Herói</label>
+            <input type="text" name="nome" class="form-control border-0 bg-light p-3" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label small fw-bold text-secondary text-uppercase">Arquétipo</label>
+            <select name="arquetipo" class="form-select border-0 bg-light p-3">
+                <option value="CONQUISTADOR">CONQUISTADOR</option>
+                <option value="GÊNIO">GÊNIO</option>
+                <option value="ÍCONE">ÍCONE</option>
+                <option value="SOBREVIVENTE">SOBREVIVENTE</option>
+                <option value="LEGISLADOR">LEGISLADOR</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label small fw-bold text-secondary text-uppercase">Avatar</label>
+            <input type="file" name="imagem" class="form-control border-0 bg-light p-2">
+        </div>
+
+        <hr class="my-4 opacity-25">
+
+        {% set sistema = [
+            {'atrib': 'FORÇA', 'tag': 'FOR', 'pericias': ['luta', 'atletismo', 'brutalidade']},
+            {'atrib': 'INSTINTO', 'tag': 'INS', 'pericias': ['percepção', 'reflexos', 'furtividade', 'navegação', 'rastreamento', 'pontaria']},
+            {'atrib': 'RESISTÊNCIA', 'tag': 'RES', 'pericias': ['fortitude', 'sobrevivência']},
+            {'atrib': 'AUTORIDADE', 'tag': 'AUT', 'pericias': ['persuasão', 'intimidação', 'enganação', 'etiqueta']},
+            {'atrib': 'MENTE', 'tag': 'MEN', 'pericias': ['conhecimento', 'investigação', 'estratégia', 'medicina', 'vontade']}
+        ] %}
+
+        {% for bloco in sistema %}
+        <div class="mb-4 p-3 rounded-3" style="background-color: #fcfaf5; border-left: 4px solid #3C3B39;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <label class="fw-bold text-dark">{{ bloco.atrib }}</label>
+                <input type="number" name="a_{{ bloco.atrib|lower }}" class="form-control form-control-sm border-0 bg-white shadow-sm text-center fw-bold" style="width: 60px;" value="0">
+            </div>
+            
+            <div class="row g-2">
+                {% for p in bloco.pericias %}
+                <div class="col-6">
+                    <div class="bg-white p-2 rounded shadow-sm border border-light">
+                        <label class="small text-muted d-block" style="font-size: 0.65rem; text-transform: uppercase;">{{ p }}</label>
+                        <input type="number" name="p_{{ p }}" class="form-control form-control-sm border-0 p-0 fw-bold" value="0">
+                    </div>
+                </div>
+                {% endfor %}
+                
+                {% if bloco.atrib == 'MENTE' %}
+                <div class="col-12">
+                    <div class="bg-white p-2 rounded shadow-sm border border-light mt-1">
+                        <label class="small text-muted d-block" style="font-size: 0.65rem;">OFÍCIO (DEFINA)</label>
+                        <div class="d-flex">
+                            <input type="text" name="oficio_nome" class="form-control form-control-sm border-0 p-0" placeholder="Qual?">
+                            <input type="number" name="p_oficio" class="form-control form-control-sm border-0 p-0 fw-bold text-end" style="width: 40px;" value="0">
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="mb-3">
+            <label class="form-label small fw-bold text-secondary text-uppercase">Habilidades</label>
+            <textarea name="habilidades" class="form-control border-0 bg-light p-3" rows="3" placeholder="Habilidades de Arquétipo ou Especiais..."></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label small fw-bold text-secondary text-uppercase">Inventário</label>
+            <textarea name="itens" class="form-control border-0 bg-light p-3" rows="3" placeholder="Itens e equipamentos..."></textarea>
+        </div>
+
+        <div class="d-grid gap-2 mt-4">
+            <button type="submit" class="btn btn-dark btn-lg rounded-pill">Salvar Ficha</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
